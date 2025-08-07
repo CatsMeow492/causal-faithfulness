@@ -1,0 +1,47 @@
+{
+  "title": "A Causal-Faithfulness Score for Post-hoc Explanations Across Model Architectures",
+  "description": "A model-agnostic metric that quantifies how faithfully feature-based explanations reflect a model's true decision logic through principled causal intervention semantics.",
+  "creators": [
+    {
+      "name": "[Author Name]",
+      "affiliation": "[Institution]",
+      "orcid": "[ORCID ID]"
+    }
+  ],
+  "keywords": [
+    "explainable AI",
+    "XAI",
+    "explanation faithfulness",
+    "causal intervention",
+    "model interpretability",
+    "post-hoc explanations",
+    "SHAP",
+    "LIME",
+    "Integrated Gradients"
+  ],
+  "license": "MIT",
+  "upload_type": "software",
+  "version": "1.0.0",
+  "publication_date": "2025-08-06",
+  "related_identifiers": [
+    {
+      "identifier": "unknown",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "[Contributor Name]",
+      "type": "Other"
+    }
+  ],
+  "references": [
+    "Jain, S., & Wallace, B. C. (2019). Attention is not Explanation. NAACL-HLT.",
+    "Adebayo, J., et al. (2018). Sanity checks for saliency maps. NeurIPS.",
+    "Hooker, S., et al. (2019). A benchmark for interpretability methods in deep neural networks. NeurIPS."
+  ],
+  "notes": "Software implementation accompanying the research paper. Git commit: unknown",
+  "language": "eng",
+  "access_right": "open"
+}

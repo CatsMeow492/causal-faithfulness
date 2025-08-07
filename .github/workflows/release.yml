@@ -1,0 +1,130 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch full history for release notes
+    
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run tests before release
+      run: |
+        pytest tests/ -v --tb=short
+        python scripts/ci_toy_model_test.py
+    
+    - name: Generate release artifacts
+      run: |
+        python scripts/prepare_release.py
+    
+    - name: Get version
+      id: get_version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_version.outputs.version }}
+        release_name: Release ${{ steps.get_version.outputs.version }}
+        body_path: RELEASE_NOTES.md
+        draft: false
+        prerelease: false
+    
+    - name: Upload Release Archive
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./causal-faithfulness-metric-${{ steps.get_version.outputs.version }}.zip
+        asset_name: causal-faithfulness-metric-${{ steps.get_version.outputs.version }}.zip
+        asset_content_type: application/zip
+    
+    - name: Upload Zenodo Metadata
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./.zenodo.json
+        asset_name: zenodo-metadata.json
+        asset_content_type: application/json
+
+  publish-to-zenodo:
+    runs-on: ubuntu-latest
+    needs: create-release
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+    
+    - name: Prepare Zenodo submission
+      run: |
+        python scripts/prepare_release.py
+    
+    - name: Create Zenodo archive
+      run: |
+        # Create a clean archive for Zenodo
+        mkdir -p zenodo-archive
+        cp -r src/ zenodo-archive/
+        cp -r tests/ zenodo-archive/
+        cp -r examples/ zenodo-archive/
+        cp -r docs/ zenodo-archive/
+        cp requirements.txt LICENSE README.md RELEASE_NOTES.md zenodo-archive/
+        
+        # Create version info
+        python -c "from src.version_info import save_version_info; save_version_info('zenodo-archive/version_info.json')"
+        
+        # Create archive
+        tar -czf zenodo-submission.tar.gz -C zenodo-archive .
+    
+    - name: Upload to Zenodo (placeholder)
+      run: |
+        echo "Zenodo submission prepared: zenodo-submission.tar.gz"
+        echo "Manual step required: Upload to Zenodo at https://zenodo.org/"
+        echo "Use the .zenodo.json metadata file for submission details"
+        
+        # Note: Actual Zenodo API integration would require:
+        # 1. Zenodo API token in GitHub secrets
+        # 2. API calls to create deposition and upload files
+        # This is left as a manual step for security and control

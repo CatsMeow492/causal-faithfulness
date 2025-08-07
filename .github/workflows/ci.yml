@@ -1,0 +1,135 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+        python-version: ['3.10', '3.11']
+        
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest-xdist  # For parallel test execution
+    
+    - name: Verify installation and environment
+      run: |
+        python -c "import torch; print(f'PyTorch version: {torch.__version__}')"
+        python -c "import numpy; print(f'NumPy version: {numpy.__version__}')"
+        python -c "import sklearn; print(f'Scikit-learn version: {sklearn.__version__}')"
+        python src/version_info.py
+    
+    - name: Run linting
+      run: |
+        flake8 src/ tests/ examples/ scripts/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 src/ tests/ examples/ scripts/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Run unit tests
+      run: |
+        pytest tests/unit/ -v --cov=src --cov-report=xml --cov-report=term-missing
+    
+    - name: Run integration tests
+      run: |
+        pytest tests/integration/ -v --tb=short
+    
+    - name: Run validation tests (sanity checks)
+      run: |
+        pytest tests/validation/ -v --tb=short
+    
+    - name: Run toy model F-score computation
+      run: |
+        python scripts/ci_toy_model_test.py
+    
+    - name: Upload coverage to Codecov
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+  reproducibility-check:
+    runs-on: macos-latest
+    needs: test
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run reproducibility verification
+      run: |
+        python scripts/verify_reproducibility.py --quick-test
+    
+    - name: Save version information
+      run: |
+        python -c "from src.version_info import save_version_info; save_version_info('ci_version_info.json')"
+    
+    - name: Upload version info as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ci-version-info
+        path: ci_version_info.json
+
+  performance-benchmark:
+    runs-on: macos-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run performance benchmark
+      run: |
+        python scripts/ci_performance_benchmark.py
+    
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-benchmark
+        path: benchmark_results.json
