@@ -1,0 +1,379 @@
+{
+  "SHAP": [
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 0,
+      "baseline_performance": 0.0,
+      "explained_performance": 0.0,
+      "statistical_significance": false,
+      "p_value": 1.0,
+      "computation_metrics": {
+        "error": "Unsupported input type: <class 'src.datasets.DatasetSample'>"
+      }
+    }
+  ]
+}

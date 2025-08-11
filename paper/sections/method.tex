@@ -1,0 +1,43 @@
+We define $\Fscore$ via Monte Carlo evaluation of prediction changes under feature masking guided by an explainer’s importance ordering. Let $\X \in \R^d$ and model $f$. For a subset of features $S$, let $m(\X, S)$ denote masked inputs drawn from a specified baseline distribution. $\Fscore$ aggregates the normalized effect on $f$ when masking the top-$k$ (or top-fraction) features selected by the explainer. We present axioms (Causal Influence, Sufficiency, Monotonicity, Normalization) and show how our construction satisfies them under mild assumptions about $m(\cdot)$ and $f$. We also consider implementation choices: masking strategies (e.g., zeroing, PAD for tokens), baseline sampling, and the number of Monte Carlo samples with uncertainty quantification.
+
+Formally, let $\pi_E(\X)$ be the ordering of feature indices induced by explainer $E$ on input $\X$. For a budget parameter $b\in\{1,\dots,d\}$ or top-fraction $\alpha\in(0,1]$, define the top set $S_b(\X) = \{\pi_E(\X)_1,\dots,\pi_E(\X)_b\}$ or $S_\alpha(\X)$ analogously.
+Let $\Delta f(\X;S)$ denote the prediction change under intervention:
+\[
+\Delta f(\X;S) \;=\; f(\X) - \Eexp{ f\big(m(\X, S)\big) }\,.
+\]
+We normalize by a reference scale $Z(\X)$ so that scores lie in $[0,1]$ (e.g., the maximum achievable change over budgets or a task-specific bound):
+\[
+F(E) \;=\; \Eexp{ \frac{ \Delta f\big(\X; S_\alpha(\X)\big) }{ Z(\X) + \varepsilon } }\,, \qquad \varepsilon>0\,.
+\]
+In practice we estimate the inner expectation with $N$ Monte Carlo draws of the masker $m$, yielding an unbiased estimator with standard error reported as a bootstrap 95\% CI.
+
+\paragraph{Implementation details.}
+Masking for text replaces token ids with a PAD symbol while preserving attention masks; tabular features are zeroed. Baselines are sampled from a random masking distribution to approximate interventions. We select a top fraction $\alpha$ of features per input based on an explainer’s ranking. Unless stated otherwise we use $N\!=\!64$ Monte Carlo draws (smaller $N$ for coverage runs) and report CIs via nonparametric bootstrap. We compute attributions with Integrated Gradients, SHAP, and LIME using standard library implementations, ensuring correct tensor dtypes and device placement.
+
+\paragraph{Computational complexity.}
+Let $d$ be the number of features and $C_f$ the cost of a forward pass. For IG with $T$ interpolation steps, attribution cost is $\mc{O}(T\,C_f)$, and evaluating $\Fscore$ with $N$ baseline draws incurs $\mc{O}(N\,C_f)$, giving total $\mc{O}((T{+}N)\,C_f)$ per example. SHAP/LIME costs depend on the number of perturbations (often hundreds) and are correspondingly heavier; Random is negligible. Our runs favor IG and Random for full-scale evaluation and use SHAP/LIME on small subsets to provide coverage.
+
+\paragraph{Axioms and properties.}
+Under boundedness of $f$ and masking that preserves support, normalization ensures $F(E)\in[0,1]$ (Normalization). If $E$ ranks features by nonincreasing causal effect and masking is monotone in $S$, then $F(E)$ is nondecreasing in $\alpha$ (Monotonicity). If $E$ is uninformative (random), $F(E)$ concentrates near zero under symmetric baselines (Sufficiency as a null). When $E$ identifies truly causal features, $F(E)$ is maximized (Causal Influence). Proof sketches follow standard arguments using isotonicity of $\Delta f$ in $|S|$ and concentration for Monte Carlo estimators.
+
+\paragraph{Proof sketches.}
+\begin{proposition}[Normalization]
+If $0 \le f(\cdot) \le 1$ and $0\le \Delta f(\X;S) \le Z(\X)$ for all $\X,S$, then $F(E)\in[0,1]$.
+\end{proposition}
+\emph{Sketch.} By definition $0\le \Delta f/Z\le 1$ pointwise. Taking expectations preserves bounds.
+
+\begin{proposition}[Monotonicity]
+If $\Delta f(\X;S)$ is nondecreasing in $S$ under set inclusion and $S_\alpha(\X)\subseteq S_{\alpha'}(\X)$ for $\alpha<\alpha'$, then $F(E)$ is nondecreasing in $\alpha$.
+\end{proposition}
+\emph{Sketch.} Monotonicity of $\Delta f$ with inclusion and nesting of top sets imply the claim. Expectations preserve the order.
+
+\begin{proposition}[Sufficiency (Null)]
+If $E$ is random and the baseline is symmetric so that $\Eexp{ f(m(\X,S)) }\approx f(\X)$ in expectation for non-informative $S$, then $\Eexp{\Delta f(\X;S)}\approx 0$ and hence $F(E)\approx 0$.
+\end{proposition}
+\emph{Sketch.} Without information, masking a random subset has zero-mean effect under symmetry; normalization preserves near-zero expectation.
+
+\begin{proposition}[Causal Influence]
+If $E$ correctly ranks causal features by effect magnitude, then for any fixed budget $\alpha$, $\Delta f(\X;S_\alpha(\X))$ is maximized in expectation among rankings.
+\end{proposition}
+\emph{Sketch.} Follows from rearrangement inequality: selecting largest-marginal-effect features maximizes additive effect under monotone masking.
+

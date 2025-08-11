@@ -19,6 +19,7 @@ from .robust_computation import (
 )
 from .masking import FeatureMasker, DataModality, MaskingStrategy
 from .baseline import BaselineGenerator, BaselineStrategy
+from .datasets import DatasetSample
 
 
 @dataclass
@@ -34,6 +35,9 @@ class FaithfulnessConfig:
     numerical_epsilon: float = 1e-8
     computation_limits: Optional[ComputationLimits] = None
     enable_streaming: bool = False  # Enable streaming for large datasets
+    # Feature selection for masking: keep only top features
+    top_k: Optional[int] = None
+    top_fraction: Optional[float] = 0.1  # keep top 10% by default
     
     def __post_init__(self):
         """Set default device and computation limits if not provided."""
@@ -238,19 +242,35 @@ class FaithfulnessMetric:
     ) -> torch.Tensor:
         """Get model prediction for input data with hardware optimization."""
         with torch.no_grad():
-            # Convert data to tensor and move to optimal device
+            # Prepare data by modality and type
             if isinstance(data, np.ndarray):
-                data = torch.from_numpy(data).float()
+                # For text modality, keep integer token ids
+                if self.modality == DataModality.TEXT:
+                    data = torch.from_numpy(data).long()
+                else:
+                    data = torch.from_numpy(data).float()
             elif isinstance(data, torch.Tensor):
-                data = data.float()
-            
-            # Move to device with safe operation
-            try:
-                data = data.to(self.config.device)
-            except Exception as e:
-                warnings.warn(f"Failed to move data to {self.config.device}, using CPU: {e}")
-                data = data.to('cpu')
-                self.config.device = torch.device('cpu')
+                if self.modality == DataModality.TEXT:
+                    # Keep token ids as integers
+                    if data.dtype not in (torch.long, torch.int, torch.int64):
+                        data = data.long()
+                else:
+                    data = data.float()
+            elif isinstance(data, DatasetSample):
+                # Leave DatasetSample as-is; downstream model function will handle devices
+                pass
+            elif isinstance(data, dict):
+                # Leave dict as-is; model function may handle it
+                pass
+
+            # Move tensors to device when applicable
+            if isinstance(data, torch.Tensor):
+                try:
+                    data = data.to(self.config.device)
+                except Exception as e:
+                    warnings.warn(f"Failed to move data to {self.config.device}, using CPU: {e}")
+                    data = data.to('cpu')
+                    self.config.device = torch.device('cpu')
             
             # Get prediction with safe operation and stabilization
             def _model_forward(model_func, input_data):
@@ -276,9 +296,17 @@ class FaithfulnessMetric:
         
         # Get absolute importance scores
         abs_scores = np.abs(attribution)
-        
-        # Return indices sorted by importance (descending)
-        return np.argsort(abs_scores)[::-1].tolist()
+        sorted_indices = np.argsort(abs_scores)[::-1].tolist()
+
+        # Select subset based on config
+        num_features = len(sorted_indices)
+        if self.config.top_k is not None and self.config.top_k > 0:
+            k = min(self.config.top_k, num_features)
+            return sorted_indices[:k]
+        if self.config.top_fraction is not None and 0.0 < self.config.top_fraction < 1.0:
+            k = max(1, int(np.ceil(num_features * self.config.top_fraction)))
+            return sorted_indices[:k]
+        return sorted_indices
     
     def _compute_explained_differences(
         self,
@@ -353,10 +381,10 @@ class FaithfulnessMetric:
     
     def _mask_features(
         self,
-        data: Union[torch.Tensor, Dict, np.ndarray],
+        data: Union[torch.Tensor, Dict, np.ndarray, DatasetSample],
         features_to_keep: List[int],
         mask_explained: bool = False
-    ) -> Union[torch.Tensor, Dict, np.ndarray]:
+    ) -> Union[torch.Tensor, Dict, np.ndarray, DatasetSample]:
         """
         Mask features using the configured FeatureMasker.
         
@@ -366,6 +394,16 @@ class FaithfulnessMetric:
             mask_explained: Whether to mask the explained features or keep them
         """
         try:
+            # Special handling for tokenized text samples
+            if isinstance(data, DatasetSample) and self.modality == DataModality.TEXT:
+                masked_tokens = self.masker.mask_features(data.tokens, features_to_keep, mask_explained)
+                return DatasetSample(
+                    text=data.text,
+                    tokens=masked_tokens,
+                    attention_mask=data.attention_mask,
+                    label=data.label,
+                    metadata=data.metadata,
+                )
             return self.masker.mask_features(data, features_to_keep, mask_explained)
         except Exception as e:
             warnings.warn(f"Feature masking failed: {e}. Using fallback masking.")
@@ -383,17 +421,46 @@ class FaithfulnessMetric:
                         if features_to_mask:
                             masked_data[..., features_to_mask] = 0
                 return masked_data
+            elif isinstance(data, DatasetSample) and self.modality == DataModality.TEXT:
+                # Fallback: zero out positions
+                masked_tokens = data.tokens.clone()
+                if mask_explained:
+                    masked_tokens[..., features_to_keep] = 0
+                else:
+                    all_features = list(range(masked_tokens.shape[-1]))
+                    features_to_mask = [f for f in all_features if f not in features_to_keep]
+                    if features_to_mask:
+                        masked_tokens[..., features_to_mask] = 0
+                return DatasetSample(
+                    text=data.text,
+                    tokens=masked_tokens,
+                    attention_mask=data.attention_mask,
+                    label=data.label,
+                    metadata=data.metadata,
+                )
             else:
                 return data
     
     def _generate_baseline(
         self, 
-        data: Union[torch.Tensor, Dict, np.ndarray]
-    ) -> Union[torch.Tensor, Dict, np.ndarray]:
+        data: Union[torch.Tensor, Dict, np.ndarray, DatasetSample]
+    ) -> Union[torch.Tensor, Dict, np.ndarray, DatasetSample]:
         """
         Generate baseline data using the configured BaselineGenerator.
         """
         try:
+            if isinstance(data, DatasetSample) and self.modality == DataModality.TEXT:
+                baseline_tokens = self.baseline_generator.generate_baseline(data.tokens, batch_size=1)
+                # baseline_tokens may be a list if batch_size>1; ensure tensor
+                if isinstance(baseline_tokens, list):
+                    baseline_tokens = baseline_tokens[0]
+                return DatasetSample(
+                    text=data.text,
+                    tokens=baseline_tokens,
+                    attention_mask=data.attention_mask,
+                    label=data.label,
+                    metadata=data.metadata,
+                )
             return self.baseline_generator.generate_baseline(data, batch_size=1)
         except Exception as e:
             warnings.warn(f"Baseline generation failed: {e}. Using fallback baseline.")
@@ -407,6 +474,16 @@ class FaithfulnessMetric:
                     return torch.mean(data, dim=0, keepdim=True).expand_as(data)
                 else:
                     return torch.randn_like(data)
+            elif isinstance(data, DatasetSample) and self.modality == DataModality.TEXT:
+                # Fallback random tokens
+                fallback = torch.randint_like(data.tokens, low=0, high=int(data.tokens.max().item()+1))
+                return DatasetSample(
+                    text=data.text,
+                    tokens=fallback,
+                    attention_mask=data.attention_mask,
+                    label=data.label,
+                    metadata=data.metadata,
+                )
             else:
                 return data
     

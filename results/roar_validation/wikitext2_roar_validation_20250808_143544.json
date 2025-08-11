@@ -1,0 +1,323 @@
+{
+  "config": {
+    "dataset": "wikitext2",
+    "num_samples": 40,
+    "removal_percentages": [
+      0.1,
+      0.2
+    ],
+    "include_shap": false,
+    "device": "cpu",
+    "random_seed": 42
+  },
+  "roar_results": {
+    "Random": [
+      {
+        "explainer_name": "Random",
+        "removal_percentage": 0.1,
+        "original_accuracy": 0.0,
+        "modified_accuracy": 0.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 40,
+        "computation_time": 10.235903978347778,
+        "metadata": {
+          "n_modified_samples": 40,
+          "removal_strategy": "top_k_features"
+        }
+      },
+      {
+        "explainer_name": "Random",
+        "removal_percentage": 0.2,
+        "original_accuracy": 0.0,
+        "modified_accuracy": 0.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 40,
+        "computation_time": 10.218065023422241,
+        "metadata": {
+          "n_modified_samples": 40,
+          "removal_strategy": "top_k_features"
+        }
+      }
+    ],
+    "Occlusion": [
+      {
+        "explainer_name": "Occlusion",
+        "removal_percentage": 0.1,
+        "original_accuracy": 0.0,
+        "modified_accuracy": 0.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 40,
+        "computation_time": 30.72330594062805,
+        "metadata": {
+          "n_modified_samples": 40,
+          "removal_strategy": "top_k_features"
+        }
+      },
+      {
+        "explainer_name": "Occlusion",
+        "removal_percentage": 0.2,
+        "original_accuracy": 0.0,
+        "modified_accuracy": 0.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 40,
+        "computation_time": 30.899366855621338,
+        "metadata": {
+          "n_modified_samples": 40,
+          "removal_strategy": "top_k_features"
+        }
+      }
+    ]
+  },
+  "faithfulness_summary": {
+    "Random": {
+      "mean_f_score": 0.1182028555201275,
+      "std_f_score": 0.22499012603008028,
+      "median_f_score": 0.0,
+      "min_f_score": 0.0,
+      "max_f_score": 0.9394208235596676,
+      "mean_p_value": 0.03402014845748734,
+      "significant_results": 35,
+      "total_results": 40,
+      "mean_computation_time": 15.440611189603805,
+      "total_computation_time": 617.6244475841522
+    },
+    "Occlusion": {
+      "mean_f_score": 0.09478137047910996,
+      "std_f_score": 0.2109609168323787,
+      "median_f_score": 0.0,
+      "min_f_score": 0.0,
+      "max_f_score": 0.7843116174736262,
+      "mean_p_value": 0.04010497671227679,
+      "significant_results": 37,
+      "total_results": 40,
+      "mean_computation_time": 27.13325650691986,
+      "total_computation_time": 1085.3302602767944
+    }
+  },
+  "correlation_results": [
+    {
+      "explainer_name": "Random",
+      "pearson_r": NaN,
+      "p_value": NaN,
+      "spearman_rho": NaN,
+      "spearman_p": NaN,
+      "n_samples": 2,
+      "roar_scores": [
+        0.0,
+        0.0
+      ],
+      "faithfulness_scores": [
+        0.0,
+        0.3148564834361346
+      ],
+      "is_significant": false
+    },
+    {
+      "explainer_name": "Occlusion",
+      "pearson_r": NaN,
+      "p_value": NaN,
+      "spearman_rho": NaN,
+      "spearman_p": NaN,
+      "n_samples": 2,
+      "roar_scores": [
+        0.0,
+        0.0
+      ],
+      "faithfulness_scores": [
+        0.0,
+        0.0
+      ],
+      "is_significant": false
+    }
+  ],
+  "per_sample": {
+    "Random": {
+      "drops": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        8.699732461536769e-06,
+        0.0,
+        1.3739872883888893e-06,
+        0.0,
+        1.1490492397570051e-06,
+        1.812786649679765e-06,
+        0.0,
+        0.0,
+        0.0,
+        1.7893726180773228e-06,
+        0.0,
+        0.0,
+        1.8604678189149126e-06,
+        0.0,
+        1.2054115359205753e-06,
+        0.0,
+        5.454430720419623e-07,
+        0.0,
+        1.06530615084921e-06,
+        1.7620886865188368e-06,
+        2.5988329070969485e-06,
+        0.0,
+        0.0,
+        1.6211906768148765e-06,
+        1.687669282546267e-06,
+        0.0,
+        1.4110446500126272e-06,
+        6.493787623185199e-07,
+        4.1731354940566234e-06,
+        2.3095117285265587e-06,
+        2.311941898369696e-06,
+        2.5051595002878457e-06,
+        1.2844029697589576e-06,
+        0.0,
+        4.634644938050769e-06
+      ],
+      "f_scores": [
+        0.0,
+        0.3148564834361346,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.5119604783639312,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.4879630112012945,
+        0.0,
+        0.0,
+        0.0,
+        0.6304122174447242,
+        0.06303146190232767,
+        0.0,
+        0.0,
+        0.22902774973963802,
+        0.46311964910503334,
+        0.0,
+        0.9394208235596676,
+        0.0,
+        0.34145062070606114,
+        0.5113091593746333,
+        0.2355625659716548,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "Occlusion": {
+      "drops": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.686705096901278e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "f_scores": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.3267002965961855,
+        0.0,
+        0.1405245624584529,
+        0.0,
+        0.4680910996716865,
+        0.7843116174736262,
+        0.0,
+        0.0,
+        0.0,
+        0.27699833126793105,
+        0.0,
+        0.0,
+        0.0,
+        0.4949157642706091,
+        0.0,
+        0.0,
+        0.0,
+        0.7288806695175413,
+        0.0,
+        0.0,
+        0.570832477908366,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "per_sample_correlation": {
+    "Random": {
+      "pearson_r": -0.031028000590871983,
+      "pearson_p": 0.8492611554357171,
+      "spearman_rho": 0.04163163793692154,
+      "spearman_p": 0.7986745791680071,
+      "n": 40
+    },
+    "Occlusion": {
+      "pearson_r": 0.48130787260846686,
+      "pearson_p": 0.00166564126564251,
+      "spearman_rho": 0.367295641165367,
+      "spearman_p": 0.019728587154936507,
+      "n": 40
+    }
+  }
+}

@@ -1,3 +1,38 @@
+# Causal Faithfulness Metric
+
+This repository accompanies the paper "Measuring Causal Faithfulness of Post-hoc Explanations" and contains code to reproduce experiments, analysis, and figures.
+
+## Environment
+
+- Python 3.13
+- PyTorch 2.7.1
+
+```
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+## Reproducing main experiments
+
+See Appendix of the paper for full commands. Key runs:
+
+```
+./venv/bin/python scripts/run_sst2_experiments.py --num-samples 200 --max-eval-samples 200 --device cpu --faithfulness-samples 64 --explainers IntegratedGradients,Random --random-seed 42 --output-dir results/sst2_200_ig_random_fs64
+
+./venv/bin/python scripts/run_wikitext2_experiments.py --num-samples 200 --max-eval-samples 200 --device cpu --faithfulness-samples 64 --max-length 256 --explainers IntegratedGradients,Random --random-seed 42 --output-dir results/wikitext2_200_ig_random_fs64_len256_full
+```
+
+## Figures and Paper
+
+```
+./venv/bin/python scripts/make_figures.py --runs <...> --figdir figures
+./scripts/build_paper.sh
+```
+
+## License
+
+MIT. See `LICENSE` and dataset attributions in `data/LICENSE_COMPLIANCE.md`.
 # A Causal-Faithfulness Score for Post-hoc Explanations Across Model Architectures
 
 [![CI Status](https://github.com/[username]/[repo]/workflows/Continuous%20Integration/badge.svg)](https://github.com/[username]/[repo]/actions)

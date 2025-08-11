@@ -1,0 +1,4 @@
+Prior work evaluates faithfulness via deletion/insertion curves, occlusion tests, and ROAR \citep{hooker2019roar}. Gradient-based methods such as Integrated Gradients (IG) \citep{sundararajan2017integrated} and perturbation-based methods such as SHAP \citep{lundberg2017shap} and LIME \citep{ribeiro2016lime} offer different trade-offs in axiomatic guarantees, locality, and computational cost. Sanity checks for saliency methods highlight the need for rigorous validation \citep{adebayo2018sanity}, and attention has been shown not to be a faithful explanation by itself \citep{jain2019attention}.
+
+Our metric complements these directions by quantifying causal influence through explicit interventions (principled masking) with Monte Carlo estimation and uncertainty quantification. It is designed to be modality-agnostic and supports standardized comparisons across models and datasets.
+

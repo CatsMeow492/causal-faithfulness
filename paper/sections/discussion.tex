@@ -1,0 +1,11 @@
+Our metric is consistent across modalities and models, supports uncertainty quantification, and satisfies key axioms. Here we discuss limitations and implications.
+
+\paragraph{Limitations.}
+First, scores can depend on the masking operator and baseline distribution. Although we use principled PAD/zeroing with random baselines, different domains may require task-specific maskers (e.g., in images, in-filling models). Second, faithfulness estimates for perturbation-heavy explainers can be computationally demanding. Third, extremely confident models (e.g., short texts with decisive cues) may saturate scores near 1.0 for strong explainers, limiting resolution among top methods. Finally, while ROAR correlations support validity, removal-and-retrain is itself sensitive to retraining protocol.
+
+\paragraph{Implications.}
+Standardized causal-faithfulness scoring enables fairer comparison of explanation methods across model families and modalities. The [0,1] normalization simplifies reporting and interpretation. Coupling scores with uncertainty (CIs) and significance testing promotes statistical rigor. In practice, we recommend reporting: (i) mean $\Fscore$ with 95\% CI, (ii) paired tests vs. baselines, (iii) resource costs, and (iv) sensitivity to masking choices. Our results suggest IG is a strong default on text tasks under our settings, while SHAP/LIME coverage runs highlight the need for careful configuration to avoid underpowered or degenerate regimes.
+
+\paragraph{Future directions.}
+Promising directions include learning-aware maskers (e.g., generative in-filling), adaptive budgets for top-fraction selection, structured features (phrases/spans/concepts), and calibration of $\Fscore$ against downstream utility (e.g., human-in-the-loop tasks). Establishing community benchmarks with fixed maskers and seeds would further improve comparability.
+

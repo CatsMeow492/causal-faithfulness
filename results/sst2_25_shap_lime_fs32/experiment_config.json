@@ -1,0 +1,18 @@
+{
+  "experiment": "SST-2 Faithfulness Evaluation",
+  "dataset": "SST-2 validation set",
+  "model": "BERT-base-uncased fine-tuned on SST-2",
+  "n_samples": 25,
+  "explainers": [
+    "SHAP",
+    "LIME"
+  ],
+  "random_seed": 42,
+  "device": "cpu",
+  "faithfulness_config": {
+    "n_samples": 32,
+    "baseline_strategy": "random",
+    "masking_strategy": "pad",
+    "confidence_level": 0.95
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "synthetic_tabular_ig_lime_random_ns50_nf10_fs128": {
+    "error": "Object of type bool is not JSON serializable"
+  }
+}

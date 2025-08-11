@@ -1,0 +1,86 @@
+{
+  "IntegratedGradients": [
+    {
+      "f_score": 0.1869575487599916,
+      "confidence_interval": [
+        0.0,
+        0.3162434757081519
+      ],
+      "n_samples": 64,
+      "baseline_performance": 7.1924824714660645,
+      "explained_performance": 5.8477935791015625,
+      "statistical_significance": false,
+      "p_value": 0.05984994938215371,
+      "computation_metrics": {
+        "computation_time_seconds": 0.0,
+        "n_model_queries": 128,
+        "mean_explained_diff": 5.8477935791015625,
+        "mean_baseline_diff": 7.1924824714660645,
+        "std_explained_diff": 0.0,
+        "std_baseline_diff": 5.56929389487591
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.11699296730260914
+      ],
+      "n_samples": 64,
+      "baseline_performance": 6.4712347984313965,
+      "explained_performance": 7.01092529296875,
+      "statistical_significance": false,
+      "p_value": 0.481482121490861,
+      "computation_metrics": {
+        "computation_time_seconds": 0.0,
+        "n_model_queries": 128,
+        "mean_explained_diff": 7.01092529296875,
+        "mean_baseline_diff": 6.4712347984313965,
+        "std_explained_diff": 0.0,
+        "std_baseline_diff": 6.049337047160363
+      }
+    }
+  ],
+  "Random": [
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 64,
+      "baseline_performance": 6.81580913066864,
+      "explained_performance": 106.97648620605469,
+      "statistical_significance": true,
+      "p_value": 2.4484357536891648e-79,
+      "computation_metrics": {
+        "computation_time_seconds": 0.0,
+        "n_model_queries": 128,
+        "mean_explained_diff": 106.97648620605469,
+        "mean_baseline_diff": 6.81580913066864,
+        "std_explained_diff": 0.0,
+        "std_baseline_diff": 5.881690742181312
+      }
+    },
+    {
+      "f_score": 0.0,
+      "confidence_interval": [
+        0.0,
+        0.0
+      ],
+      "n_samples": 64,
+      "baseline_performance": 6.331240236759186,
+      "explained_performance": 98.41490936279297,
+      "statistical_significance": true,
+      "p_value": 1.4808250818547613e-75,
+      "computation_metrics": {
+        "computation_time_seconds": 0.0,
+        "n_model_queries": 128,
+        "mean_explained_diff": 98.41490936279297,
+        "mean_baseline_diff": 6.331240236759186,
+        "std_explained_diff": 0.0,
+        "std_baseline_diff": 6.212237580925197
+      }
+    }
+  ]
+}

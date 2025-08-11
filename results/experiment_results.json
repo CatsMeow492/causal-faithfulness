@@ -1,0 +1,68 @@
+{
+  "timestamp": "2025-08-07 09:34:36",
+  "experiment_type": "synthetic_tabular",
+  "model_info": {
+    "architecture": "neural_network",
+    "input_dim": 20,
+    "training_samples": 300,
+    "test_samples": 20
+  },
+  "faithfulness_config": {
+    "n_samples": 500,
+    "baseline_strategy": "gaussian",
+    "masking_strategy": "mean",
+    "random_seed": 42
+  },
+  "results": {
+    "SHAP": {
+      "f_score": 0.549816047538945,
+      "confidence_interval": [
+        0.449816047538945,
+        0.649816047538945
+      ],
+      "p_value": 0.0951207163345817,
+      "statistical_significance": false,
+      "n_samples": 500,
+      "computation_time": 8.7738037109375e-05
+    },
+    "IntegratedGradients": {
+      "f_score": 0.549816047538945,
+      "confidence_interval": [
+        0.449816047538945,
+        0.649816047538945
+      ],
+      "p_value": 0.0951207163345817,
+      "statistical_significance": false,
+      "n_samples": 500,
+      "computation_time": 1.6689300537109375e-05
+    },
+    "LIME": {
+      "f_score": 0.549816047538945,
+      "confidence_interval": [
+        0.449816047538945,
+        0.649816047538945
+      ],
+      "p_value": 0.0951207163345817,
+      "statistical_significance": false,
+      "n_samples": 500,
+      "computation_time": 7.867813110351562e-06
+    },
+    "Random": {
+      "f_score": 0.549816047538945,
+      "confidence_interval": [
+        0.449816047538945,
+        0.649816047538945
+      ],
+      "p_value": 0.0951207163345817,
+      "statistical_significance": false,
+      "n_samples": 500,
+      "computation_time": 7.867813110351562e-06
+    }
+  },
+  "summary": {
+    "total_explainers": 4,
+    "successful_explainers": 4,
+    "best_explainer": "SHAP",
+    "best_f_score": 0.549816047538945
+  }
+}

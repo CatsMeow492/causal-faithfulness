@@ -1,0 +1,26 @@
+{
+  "IntegratedGradients": {
+    "dataset_a": "sst2_200_ig_random_fs64",
+    "dataset_b": "wikitext2_200_ig_random_fs64_len256_full",
+    "mean_a": 0.9976035910946703,
+    "mean_b": 0.6391776821584468,
+    "std_a": 0.030896272781564607,
+    "std_b": 0.3424478777448416,
+    "t_stat": 14.74210484156424,
+    "p_value": 6.929594468166621e-34,
+    "cohens_d": 1.4742104841564239,
+    "power": 1.0
+  },
+  "Random": {
+    "dataset_a": "sst2_200_ig_random_fs64",
+    "dataset_b": "wikitext2_200_ig_random_fs64_len256_full",
+    "mean_a": 0.12774675587926784,
+    "mean_b": 0.010385827621380062,
+    "std_a": 0.19680323869308533,
+    "std_b": 0.0654023508436241,
+    "t_stat": 8.003113034500963,
+    "p_value": 5.0247705896208514e-14,
+    "cohens_d": 0.8003113034500963,
+    "power": 0.9999999992443255
+  }
+}

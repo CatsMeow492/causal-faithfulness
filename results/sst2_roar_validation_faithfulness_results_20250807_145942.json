@@ -1,0 +1,66 @@
+{
+  "experiment_config": {
+    "experiment_name": "sst2_roar_validation_faithfulness",
+    "dataset_name": "sst2",
+    "model_name": "textattack/bert-base-uncased-SST-2",
+    "explainer_names": [
+      "IntegratedGradients",
+      "Random"
+    ],
+    "num_samples": 5,
+    "batch_size": 4,
+    "random_seed": 42,
+    "save_intermediate": true,
+    "output_dir": "results",
+    "faithfulness_config": {
+      "n_samples": 1000,
+      "baseline_strategy": "random",
+      "masking_strategy": "pad",
+      "confidence_level": 0.95,
+      "batch_size": 4,
+      "random_seed": 42,
+      "device": "mps",
+      "numerical_epsilon": 1e-08,
+      "computation_limits": {
+        "max_memory_usage_gb": 8.0,
+        "numerical_epsilon": 1e-08,
+        "gradient_clip_value": 1.0,
+        "min_batch_size": 1,
+        "max_retries": 3,
+        "memory_check_interval": 100
+      },
+      "enable_streaming": false,
+      "top_k": null,
+      "top_fraction": 0.1
+    }
+  },
+  "dataset_info": {
+    "name": "sst2",
+    "num_samples": 5,
+    "modality": "DataModality.TEXT"
+  },
+  "model_info": {
+    "name": "textattack/bert-base-uncased-SST-2",
+    "device": "mps",
+    "type": "BERTSentimentWrapper"
+  },
+  "explainer_results": {
+    "IntegratedGradients": [],
+    "Random": []
+  },
+  "summary_statistics": {},
+  "computation_metrics": {
+    "IntegratedGradients": {
+      "total_runtime": 1.5612270832061768,
+      "samples_processed": 0,
+      "avg_time_per_sample": 1.5612270832061768
+    },
+    "Random": {
+      "total_runtime": 0.8325350284576416,
+      "samples_processed": 0,
+      "avg_time_per_sample": 0.8325350284576416
+    }
+  },
+  "timestamp": "2025-08-07T14:59:42.923316",
+  "total_runtime": 4.846276044845581
+}

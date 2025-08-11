@@ -1,0 +1,4 @@
+Explainer,Mean F-Score,Std F-Score,Samples,Significant Results,Total Runtime (s),Avg Time/Sample (s),Explanation Time (s),Faithfulness Time (s),Total Model Queries,Queries/Sample
+IntegratedGradients,0.0000,0.0000,50,0/50,0.00,0.000,0.00,0.00,0,0.0
+LIME,0.0000,0.0000,50,0/50,0.00,0.000,0.00,0.00,0,0.0
+Random,0.0000,0.0000,50,0/50,0.00,0.000,0.00,0.00,0,0.0

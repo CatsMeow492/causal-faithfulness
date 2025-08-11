@@ -1,0 +1,52 @@
+{
+  "sst2_200_ig_random_fs64": {
+    "error": "Object of type bool is not JSON serializable"
+  },
+  "wikitext2_200_ig_random_fs64_len256_full": {
+    "error": "Object of type bool is not JSON serializable"
+  },
+  "sst2_25_shap_lime_fs32": {
+    "error": "Object of type bool is not JSON serializable"
+  },
+  "wikitext2_25_shap_fs16": {
+    "validation": {
+      "statistical_tests": {
+        "bootstrap_intervals": {
+          "SHAP": {
+            "original_statistic": 0.0,
+            "bootstrap_mean": 0.0,
+            "bootstrap_std": 0.0,
+            "confidence_interval": [
+              0.0,
+              0.0
+            ],
+            "n_bootstrap_samples": 10000,
+            "confidence_level": 0.95
+          }
+        }
+      },
+      "sanity_checks": {
+        "bounds_validation": {
+          "check_name": "Metric bounds validation",
+          "passed": true,
+          "score": 1.0,
+          "threshold": 0.95,
+          "message": "Score range: [0.0000, 0.0000], Valid fraction: 1.0000",
+          "metadata": {
+            "min_score": 0.0,
+            "max_score": 0.0,
+            "n_valid_scores": 25,
+            "n_total_scores": 25
+          }
+        }
+      },
+      "summary": {
+        "significant_tests_fraction": 0.0,
+        "passed_sanity_checks_fraction": 1.0,
+        "overall_assessment": "GOOD"
+      }
+    },
+    "comparisons": {},
+    "power": {}
+  }
+}

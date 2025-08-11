@@ -18,6 +18,7 @@ from .datasets import DatasetSample
 from .models import BaseModelWrapper, ModelPrediction
 from .explainers import ExplainerWrapper, Attribution
 from .faithfulness import FaithfulnessResult
+from .masking import create_masker, DataModality, MaskingStrategy
 
 
 @dataclass
@@ -163,6 +164,51 @@ class ROARBenchmark:
                 continue
         
         return results
+
+    def evaluate_probability_drop(
+        self,
+        model: BaseModelWrapper,
+        explainer: ExplainerWrapper,
+        samples: List[DatasetSample],
+        removal_percentage: float,
+    ) -> List[float]:
+        """Compute per-sample probability drop for target class after removal."""
+        drops: List[float] = []
+
+        # Helper: get scalar prob/logit for target
+        def target_score(pred, target_idx: Optional[int]) -> float:
+            if hasattr(pred, 'probabilities') and pred.probabilities is not None:
+                probs = pred.probabilities
+                if probs.dim() == 2:
+                    probs = probs[-1]
+                idx = target_idx if target_idx is not None else int(torch.argmax(probs).item())
+                return float(probs[idx].item())
+            elif hasattr(pred, 'logits') and pred.logits is not None:
+                logits = pred.logits
+                if logits.dim() == 2:
+                    logits = logits[-1]
+                idx = target_idx if target_idx is not None else int(torch.argmax(logits).item())
+                return float(logits[idx].item())
+            return 0.0
+
+        # Build modified samples once
+        modified_samples = self._remove_features_by_explanation(model, explainer, samples, removal_percentage)
+
+        for orig, mod in zip(samples, modified_samples):
+            try:
+                pred_orig = model.predict(orig)
+                # Use provided label if available; for LM we can use last token id as proxy
+                tgt = orig.label
+                if tgt is None and hasattr(orig, 'tokens') and orig.tokens.numel() > 0:
+                    tgt = int(orig.tokens[-1].item())
+                s_orig = target_score(pred_orig, tgt)
+
+                pred_mod = model.predict(mod)
+                s_mod = target_score(pred_mod, tgt)
+                drops.append(max(0.0, s_orig - s_mod))
+            except Exception:
+                drops.append(0.0)
+        return drops
     
     def _compute_model_accuracy(
         self,
@@ -236,10 +282,15 @@ class ROARBenchmark:
         for sample in tqdm(samples, desc="Removing features", leave=False):
             try:
                 # Generate explanation
+                # For text data, pass token ids to explainers
+                expl_input = sample.tokens if hasattr(sample, 'tokens') else sample
+                target = sample.label
+                if target is None and hasattr(sample, 'tokens') and sample.tokens.numel() > 0:
+                    target = int(sample.tokens[-1].item())
                 attribution = explainer.explain(
                     model=model_predict_fn,
-                    input_data=sample,
-                    target_class=sample.label
+                    input_data=expl_input,
+                    target_class=target
                 )
                 
                 # Get top features to remove
@@ -274,29 +325,52 @@ class ROARBenchmark:
         Returns:
             Modified sample with features masked
         """
-        # Create a copy of the sample
-        modified_tokens = sample.tokens.clone()
-        modified_attention_mask = sample.attention_mask.clone()
-        
-        # Mask features (set to padding token or zero)
-        for feature_idx in features_to_mask:
-            if feature_idx < len(modified_tokens):
-                # For text data, we can set to pad token (0) or use a special mask token
-                modified_tokens[feature_idx] = 0  # Assuming 0 is pad token
-                # Keep attention mask as is to maintain sequence structure
-        
-        return DatasetSample(
-            text=sample.text,  # Keep original text for reference
-            tokens=modified_tokens,
-            attention_mask=modified_attention_mask,
-            label=sample.label,
-            metadata={
-                **(sample.metadata or {}),
-                'roar_modified': True,
-                'masked_features': features_to_mask,
-                'n_masked_features': len(features_to_mask)
-            }
-        )
+        # Decide modality: text if integer token ids, else tabular
+        is_text = sample.tokens.dtype in (torch.int64, torch.int32, torch.int16, torch.long)
+
+        if is_text:
+            # Text masking: set selected tokens to pad id 0
+            modified_tokens = sample.tokens.clone()
+            modified_attention_mask = sample.attention_mask.clone()
+
+            for feature_idx in features_to_mask:
+                if 0 <= feature_idx < modified_tokens.shape[-1]:
+                    modified_tokens[feature_idx] = 0  # pad id assumed 0
+
+            return DatasetSample(
+                text=sample.text,
+                tokens=modified_tokens,
+                attention_mask=modified_attention_mask,
+                label=sample.label,
+                metadata={
+                    **(sample.metadata or {}),
+                    'roar_modified': True,
+                    'masked_features': features_to_mask,
+                    'n_masked_features': len(features_to_mask),
+                    'modality': 'text'
+                }
+            )
+        else:
+            # Tabular masking: use ZERO strategy by default
+            masker = create_masker(modality=DataModality.TABULAR, strategy=MaskingStrategy.ZERO)
+            # Ensure 1D feature vector
+            features = sample.tokens.float().unsqueeze(0) if sample.tokens.dim() == 1 else sample.tokens.float()
+            masked = masker.mask_features(features, features_to_mask, mask_explained=True)
+            masked_vec = masked.squeeze(0)
+
+            return DatasetSample(
+                text=sample.text,
+                tokens=masked_vec,
+                attention_mask=sample.attention_mask,
+                label=sample.label,
+                metadata={
+                    **(sample.metadata or {}),
+                    'roar_modified': True,
+                    'masked_features': features_to_mask,
+                    'n_masked_features': len(features_to_mask),
+                    'modality': 'tabular'
+                }
+            )
     
     def compute_correlation_with_faithfulness(
         self,

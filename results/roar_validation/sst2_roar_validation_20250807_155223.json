@@ -1,0 +1,79 @@
+{
+  "config": {
+    "dataset": "sst2",
+    "num_samples": 5,
+    "removal_percentages": [
+      0.1,
+      0.2
+    ],
+    "include_shap": false,
+    "device": "cpu",
+    "random_seed": 42
+  },
+  "roar_results": {
+    "IntegratedGradients": [
+      {
+        "explainer_name": "IntegratedGradients",
+        "removal_percentage": 0.1,
+        "original_accuracy": 1.0,
+        "modified_accuracy": 1.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 5,
+        "computation_time": 0.7682929039001465,
+        "metadata": {
+          "n_modified_samples": 5,
+          "removal_strategy": "top_k_features"
+        }
+      },
+      {
+        "explainer_name": "IntegratedGradients",
+        "removal_percentage": 0.2,
+        "original_accuracy": 1.0,
+        "modified_accuracy": 1.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 5,
+        "computation_time": 0.7716619968414307,
+        "metadata": {
+          "n_modified_samples": 5,
+          "removal_strategy": "top_k_features"
+        }
+      }
+    ],
+    "Random": [
+      {
+        "explainer_name": "Random",
+        "removal_percentage": 0.1,
+        "original_accuracy": 1.0,
+        "modified_accuracy": 1.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 5,
+        "computation_time": 0.7697837352752686,
+        "metadata": {
+          "n_modified_samples": 5,
+          "removal_strategy": "top_k_features"
+        }
+      },
+      {
+        "explainer_name": "Random",
+        "removal_percentage": 0.2,
+        "original_accuracy": 1.0,
+        "modified_accuracy": 1.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 5,
+        "computation_time": 0.7934451103210449,
+        "metadata": {
+          "n_modified_samples": 5,
+          "removal_strategy": "top_k_features"
+        }
+      }
+    ]
+  },
+  "faithfulness_summary": {
+    "IntegratedGradients": {
+      "mean_f_score": 0.09745755043460332,
+      "std_f_score": 0.12213131763143303,
+      "median_f_score": 0.009244321311906889,
+      "min_f_score": 0.0,
+      "max_f_score": 0.3011584438778593,
+      "mean_p_value": 0.0864232129563597,
+      "significant_results": 

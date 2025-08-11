@@ -1,0 +1,59 @@
+{
+  "experiment_config": {
+    "experiment_name": "wikitext2_roar_validation_faithfulness",
+    "dataset_name": "wikitext2",
+    "model_name": "gpt2",
+    "explainer_names": [
+      "Random"
+    ],
+    "num_samples": 5,
+    "batch_size": 4,
+    "random_seed": 42,
+    "save_intermediate": true,
+    "output_dir": "results",
+    "faithfulness_config": {
+      "n_samples": 500,
+      "baseline_strategy": "random",
+      "masking_strategy": "pad",
+      "confidence_level": 0.95,
+      "batch_size": 4,
+      "random_seed": 42,
+      "device": "mps",
+      "numerical_epsilon": 1e-08,
+      "computation_limits": {
+        "max_memory_usage_gb": 8.0,
+        "numerical_epsilon": 1e-08,
+        "gradient_clip_value": 1.0,
+        "min_batch_size": 1,
+        "max_retries": 3,
+        "memory_check_interval": 100
+      },
+      "enable_streaming": false,
+      "top_k": null,
+      "top_fraction": 0.1
+    }
+  },
+  "dataset_info": {
+    "name": "wikitext2",
+    "num_samples": 5,
+    "modality": "DataModality.TEXT"
+  },
+  "model_info": {
+    "name": "gpt2",
+    "device": "mps",
+    "type": "GPT2LanguageModelWrapper"
+  },
+  "explainer_results": {
+    "Random": []
+  },
+  "summary_statistics": {},
+  "computation_metrics": {
+    "Random": {
+      "total_runtime": 3.0690150260925293,
+      "samples_processed": 0,
+      "avg_time_per_sample": 3.0690150260925293
+    }
+  },
+  "timestamp": "2025-08-07T17:28:14.681441",
+  "total_runtime": 6.66437292098999
+}

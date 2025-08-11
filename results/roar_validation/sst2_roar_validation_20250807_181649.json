@@ -1,0 +1,113 @@
+{
+  "config": {
+    "dataset": "sst2",
+    "num_samples": 10,
+    "removal_percentages": [
+      0.1,
+      0.2
+    ],
+    "include_shap": false,
+    "device": "cpu",
+    "random_seed": 42
+  },
+  "roar_results": {
+    "Random": [
+      {
+        "explainer_name": "Random",
+        "removal_percentage": 0.1,
+        "original_accuracy": 1.0,
+        "modified_accuracy": 1.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 10,
+        "computation_time": 1.5483229160308838,
+        "metadata": {
+          "n_modified_samples": 10,
+          "removal_strategy": "top_k_features"
+        }
+      },
+      {
+        "explainer_name": "Random",
+        "removal_percentage": 0.2,
+        "original_accuracy": 1.0,
+        "modified_accuracy": 0.8,
+        "accuracy_drop": 0.19999999999999996,
+        "n_samples": 10,
+        "computation_time": 1.5607709884643555,
+        "metadata": {
+          "n_modified_samples": 10,
+          "removal_strategy": "top_k_features"
+        }
+      }
+    ]
+  },
+  "faithfulness_summary": {
+    "Random": {
+      "mean_f_score": 0.16485301746681594,
+      "std_f_score": 0.22747568095246368,
+      "median_f_score": 0.053769854291352726,
+      "min_f_score": 0.0,
+      "max_f_score": 0.631142895699059,
+      "mean_p_value": 3.2686338642227417e-06,
+      "significant_results": 10,
+      "total_results": 10,
+      "mean_computation_time": 37.911692237854005,
+      "total_computation_time": 379.11692237854004
+    }
+  },
+  "correlation_results": [
+    {
+      "explainer_name": "Random",
+      "pearson_r": 1.0,
+      "p_value": 1.0,
+      "spearman_rho": 0.9999999999999999,
+      "spearman_p": NaN,
+      "n_samples": 2,
+      "roar_scores": [
+        0.0,
+        0.19999999999999996
+      ],
+      "faithfulness_scores": [
+        0.0,
+        0.5657368037911643
+      ],
+      "is_significant": "False"
+    }
+  ],
+  "per_sample": {
+    "Random": {
+      "drops": [
+        0.0021954774856567383,
+        0.012770652770996094,
+        0.0,
+        0.04394853115081787,
+        0.0,
+        0.0,
+        0.4530717730522156,
+        0.002371549606323242,
+        0.0002465248107910156,
+        0.004148244857788086
+      ],
+      "f_scores": [
+        0.0,
+        0.5657368037911643,
+        0.0,
+        0.0,
+        0.17688462787343273,
+        0.0,
+        0.631142895699059,
+        0.1672261387217978,
+        0.0,
+        0.10753970858270545
+      ]
+    }
+  },
+  "per_sample_correlation": {
+    "Random": {
+      "pearson_r": 0.6822678058612037,
+      "pearson_p": 0.029736391944116397,
+      "spearman_rho": 0.4646879487333496,
+      "spearman_p": 0.17601761377018113,
+      "n": 10
+    }
+  }
+}

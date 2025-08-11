@@ -466,7 +466,99 @@ class IntegratedGradientsWrapper(ExplainerWrapper):
             # Move to appropriate device
             device = get_device()
             input_tensor = input_tensor.to(device)
-            
+
+            # Embedding-level path for transformer models
+            use_embeddings: bool = bool(kwargs.get('use_embeddings', False))
+            hf_model = kwargs.get('hf_model', None)
+            attention_mask = kwargs.get('attention_mask', None)
+
+            if use_embeddings and hf_model is not None:
+                # Expect integer token ids
+                token_ids = input_tensor.long()
+                # Ensure we use the HF model's device to avoid cross-device autograd issues
+                try:
+                    model_device = next(hf_model.parameters()).device
+                except Exception:
+                    model_device = device
+                device = model_device
+                if attention_mask is None:
+                    attention_mask = torch.ones_like(token_ids, device=device)
+                else:
+                    attention_mask = attention_mask.to(device)
+
+                embedding_layer = hf_model.get_input_embeddings()
+                with torch.no_grad():
+                    input_embeds = embedding_layer(token_ids.to(device))  # (B, L, H)
+
+                # Baseline in embedding space
+                if baseline_data is not None:
+                    baseline = baseline_data.to(device)
+                    if baseline.shape != input_embeds.shape:
+                        baseline = torch.zeros_like(input_embeds)
+                else:
+                    baseline = torch.zeros_like(input_embeds)
+
+                # Target class
+                if target_class is None:
+                    with torch.no_grad():
+                        out = hf_model(inputs_embeds=input_embeds, attention_mask=attention_mask)
+                        logits = out.logits
+                        # If sequence output (LM), use last position
+                        if logits.dim() == 3:
+                            logits_vec = logits[:, -1, :]
+                        else:
+                            logits_vec = logits
+                        target_class = int(torch.argmax(logits_vec, dim=-1).item())
+
+                # Integrated gradients over embeddings
+                alphas = torch.linspace(0.0, 1.0, self.n_steps + 1, device=device)
+                total_grad = torch.zeros_like(input_embeds)
+
+                for i in range(0, len(alphas), max(1, self.internal_batch_size)):
+                    batch_alphas = alphas[i:i + self.internal_batch_size]
+                    grads = []
+                    for alpha in batch_alphas:
+                        interp = (baseline + alpha * (input_embeds - baseline)).detach()
+                        interp.requires_grad_(True)
+                        out = hf_model(inputs_embeds=interp, attention_mask=attention_mask)
+                        logits = out.logits
+                        if logits.dim() == 3:
+                            logits_vec = logits[:, -1, :]
+                        else:
+                            logits_vec = logits
+                        target_output = logits_vec[:, target_class].sum()
+                        hf_model.zero_grad(set_to_none=True)
+                        if interp.grad is not None:
+                            interp.grad.zero_()
+                        target_output.backward()
+                        grads.append(interp.grad.detach())
+                    if grads:
+                        total_grad = total_grad + torch.stack(grads, dim=0).mean(dim=0)
+
+                avg_grad = total_grad / len(alphas)
+                attributions = avg_grad * (input_embeds - baseline)
+                # Aggregate over hidden dimension to get per-token attribution
+                token_attrib = attributions.sum(dim=-1).squeeze(0)  # (L,)
+                feature_scores = token_attrib.detach().cpu().numpy()
+                feature_indices = list(range(feature_scores.shape[0]))
+
+                computation_time = time.time() - start_time
+                return Attribution(
+                    feature_scores=feature_scores,
+                    feature_indices=feature_indices,
+                    method_name=f"{self.method_name}_EMBED",
+                    computation_time=computation_time,
+                    metadata={
+                        'target_class': target_class,
+                        'n_steps': self.n_steps,
+                        'baseline_strategy': self.baseline_strategy,
+                        'input_shape': input_tensor.shape,
+                        'device': str(device),
+                        'embedding_dim': int(attributions.shape[-1])
+                    }
+                )
+
+            # Default token-id path (tabular/continuous features)
             # Get target class if not provided
             if target_class is None:
                 with torch.no_grad():
@@ -474,34 +566,26 @@ class IntegratedGradientsWrapper(ExplainerWrapper):
                     if isinstance(pred, tuple):
                         pred = pred[0]
                     target_class = torch.argmax(pred, dim=-1).item()
-            
+
             # Create baseline
             if baseline_data is not None:
                 if isinstance(baseline_data, np.ndarray):
                     baseline = torch.from_numpy(baseline_data).float().to(device)
                 else:
                     baseline = baseline_data.float().to(device)
-                
                 if len(baseline.shape) == 1:
                     baseline = baseline.unsqueeze(0)
             else:
                 baseline = self._create_baseline(input_tensor)
-            
-            # Ensure baseline has same shape as input
+
             if baseline.shape != input_tensor.shape:
                 baseline = baseline.expand_as(input_tensor)
-            
-            # Compute integrated gradients
+
             integrated_gradients = torch.zeros_like(input_tensor)
-            
-            # Create alpha values for integration
             alphas = torch.linspace(0, 1, self.n_steps + 1, device=device)
-            
-            # Process in batches to manage memory
             for i in range(0, len(alphas), self.internal_batch_size):
                 batch_alphas = alphas[i:i + self.internal_batch_size]
                 batch_gradients = []
-                
                 for alpha in batch_alphas:
                     try:
                         grad = self._integrated_gradients_step(
@@ -511,30 +595,20 @@ class IntegratedGradientsWrapper(ExplainerWrapper):
                             batch_gradients.append(grad)
                     except Exception as e:
                         warnings.warn(f"Gradient computation failed at alpha={alpha.item()}: {e}")
-                        # Use zero gradients as fallback
                         batch_gradients.append(torch.zeros_like(input_tensor))
-                
                 if batch_gradients:
-                    # Average gradients in this batch
                     batch_avg = torch.stack(batch_gradients).mean(dim=0)
                     integrated_gradients += batch_avg
-            
-            # Average over all steps
+
             integrated_gradients = integrated_gradients / len(alphas)
-            
-            # Multiply by (input - baseline) to get final attributions
             attributions = integrated_gradients * (input_tensor - baseline)
-            
-            # Convert to numpy and flatten
             feature_scores = attributions.squeeze().cpu().detach().numpy()
             if len(feature_scores.shape) > 1:
                 feature_scores = feature_scores.flatten()
-            
-            # Create feature indices
             feature_indices = list(range(len(feature_scores)))
-            
+
             computation_time = time.time() - start_time
-            
+
             return Attribution(
                 feature_scores=feature_scores,
                 feature_indices=feature_indices,
@@ -1030,6 +1104,108 @@ def create_random_explainer(
         distribution=distribution,
         scale=scale
     )
+
+
+class OcclusionExplainer(ExplainerWrapper):
+    """
+    Simple occlusion explainer for tokenized text.
+    For each token position, mask (set to pad id 0) and measure target score drop.
+    """
+
+    def __init__(self, max_tokens: int = 64, random_seed: int = 42):
+        super().__init__(random_seed)
+        self.max_tokens = max_tokens
+        self.method_name = "Occlusion"
+
+    def explain(
+        self,
+        model: Callable,
+        input_data: Union[torch.Tensor, np.ndarray, Dict],
+        target_class: Optional[int] = None,
+        **kwargs
+    ) -> Attribution:
+        start_time = time.time()
+        try:
+            # Prepare input ids tensor (1, L)
+            if isinstance(input_data, np.ndarray):
+                ids = torch.from_numpy(input_data).long()
+            elif isinstance(input_data, torch.Tensor):
+                ids = input_data.long()
+            elif isinstance(input_data, dict) and 'input_ids' in input_data:
+                ids = input_data['input_ids']
+                if isinstance(ids, np.ndarray):
+                    ids = torch.from_numpy(ids).long()
+            else:
+                raise ValueError(f"Unsupported input type for Occlusion: {type(input_data)}")
+
+            if ids.dim() == 1:
+                ids = ids.unsqueeze(0)
+
+            device = get_device()
+            ids = ids.to(device)
+
+            # Original prediction
+            with torch.no_grad():
+                orig_pred = model(ids)
+                if isinstance(orig_pred, tuple):
+                    orig_pred = orig_pred[0]
+                if orig_pred.dim() == 2:
+                    # Assume logits over classes/vocab
+                    base_vec = orig_pred.squeeze(0)
+                else:
+                    base_vec = orig_pred.squeeze()
+
+            if target_class is None:
+                target_class = int(torch.argmax(base_vec).item())
+
+            L = ids.shape[-1]
+            limit = min(self.max_tokens, L)
+            scores = torch.zeros(L, device=device)
+
+            # Evaluate occlusion per token (up to limit)
+            for i in range(limit):
+                occluded = ids.clone()
+                occluded[0, i] = 0  # pad id assumed 0
+                with torch.no_grad():
+                    pred = model(occluded)
+                    if isinstance(pred, tuple):
+                        pred = pred[0]
+                    vec = pred.squeeze(0) if pred.dim() == 2 else pred.squeeze()
+                # Importance: drop in target score
+                drop = base_vec[target_class] - vec[target_class]
+                scores[i] = drop
+
+            feature_scores = scores.detach().cpu().numpy()
+            feature_indices = list(range(L))
+            comp_time = time.time() - start_time
+
+            return Attribution(
+                feature_scores=feature_scores,
+                feature_indices=feature_indices,
+                method_name=self.method_name,
+                computation_time=comp_time,
+                metadata={
+                    'target_class': target_class,
+                    'max_tokens': self.max_tokens,
+                    'sequence_length': L,
+                    'device': str(device),
+                }
+            )
+
+        except Exception as e:
+            comp_time = time.time() - start_time
+            warnings.warn(f"Occlusion explanation failed: {e}")
+            try:
+                length = int(input_data.shape[-1]) if hasattr(input_data, 'shape') else 1
+            except Exception:
+                length = 1
+            return Attribution(
+                feature_scores=np.zeros(length),
+                feature_indices=list(range(length)),
+                method_name=f"{self.method_name}_FAILED",
+                computation_time=comp_time,
+                metadata={'error': str(e)}
+            )
 
 
 def create_all_explainers(

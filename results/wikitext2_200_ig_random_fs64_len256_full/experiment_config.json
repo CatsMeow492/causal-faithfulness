@@ -1,0 +1,18 @@
+{
+  "experiment": "WikiText-2 Faithfulness Evaluation",
+  "dataset": "WikiText-2 validation set",
+  "model": "GPT-2-small",
+  "n_samples_dataset": 200,
+  "explainers": [
+    "IntegratedGradients",
+    "Random"
+  ],
+  "random_seed": 42,
+  "device": "cpu",
+  "faithfulness_config": {
+    "n_samples": 64,
+    "baseline_strategy": "random",
+    "masking_strategy": "pad",
+    "confidence_level": 0.95
+  }
+}

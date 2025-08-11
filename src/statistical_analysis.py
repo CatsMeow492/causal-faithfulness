@@ -303,22 +303,24 @@ class StatisticalAnalyzer:
         Returns:
             Tuple of (rejected hypotheses, corrected p-values)
         """
+        # Prefer statsmodels if available
         try:
-            if method == "bonferroni":
-                rejected, corrected_p = stats.multipletests(p_values, method='bonferroni')[:2]
-            elif method == "holm":
-                rejected, corrected_p = stats.multipletests(p_values, method='holm')[:2]
-            elif method == "fdr_bh":
-                rejected, corrected_p = stats.multipletests(p_values, method='fdr_bh')[:2]
-            else:
-                warnings.warn(f"Unknown correction method: {method}, using Bonferroni")
-                rejected, corrected_p = stats.multipletests(p_values, method='bonferroni')[:2]
-            
+            from statsmodels.stats.multitest import multipletests  # type: ignore
+            method_map = {
+                "bonferroni": 'bonferroni',
+                "holm": 'holm',
+                "fdr_bh": 'fdr_bh',
+            }
+            m = method_map.get(method, 'bonferroni')
+            rejected, corrected_p, _, _ = multipletests(p_values, alpha=self.alpha, method=m)
             return rejected.tolist(), corrected_p.tolist()
-            
         except Exception as e:
-            warnings.warn(f"Multiple comparisons correction failed: {e}")
-            return [False] * len(p_values), p_values
+            # Fallback: implement simple Bonferroni manually
+            warnings.warn(f"Multiple comparisons correction fallback (manual Bonferroni): {e}")
+            m = len(p_values) if p_values else 1
+            corrected = [min(1.0, float(p) * m) for p in p_values]
+            rejected = [cp < self.alpha for cp in corrected]
+            return rejected, corrected
 
 
 class SanityChecker:

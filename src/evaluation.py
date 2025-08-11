@@ -13,6 +13,7 @@ from dataclasses import dataclass, asdict
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+import torch
 import warnings
 
 from .config import get_device, get_batch_size, DEFAULT_CONFIG
@@ -218,17 +219,37 @@ class EvaluationPipeline:
                 predictions = self.model.predict_batch(inputs)
                 # Extract logits or probabilities for faithfulness computation
                 if hasattr(predictions[0], 'logits'):
-                    return torch.stack([p.logits for p in predictions])
+                    # Handle GPT-2 (seq_len, vocab) by taking last token
+                    processed = []
+                    for p in predictions:
+                        logits = p.logits
+                        if isinstance(logits, torch.Tensor) and logits.dim() == 2:
+                            # (seq_len, vocab) -> (vocab)
+                            logits = logits[-1]
+                        processed.append(logits)
+                    return torch.stack(processed)
                 elif hasattr(predictions[0], 'probabilities'):
-                    return torch.stack([p.probabilities for p in predictions])
+                    processed = []
+                    for p in predictions:
+                        probs = p.probabilities
+                        if isinstance(probs, torch.Tensor) and probs.dim() == 2:
+                            probs = probs[-1]
+                        processed.append(probs)
+                    return torch.stack(processed)
                 else:
                     raise ValueError("Model predictions must have logits or probabilities")
             else:
                 prediction = self.model.predict(inputs)
                 if hasattr(prediction, 'logits'):
-                    return prediction.logits
+                    logits = prediction.logits
+                    if isinstance(logits, torch.Tensor) and logits.dim() == 2:
+                        logits = logits[-1]
+                    return logits
                 elif hasattr(prediction, 'probabilities'):
-                    return prediction.probabilities
+                    probs = prediction.probabilities
+                    if isinstance(probs, torch.Tensor) and probs.dim() == 2:
+                        probs = probs[-1]
+                    return probs
                 else:
                     raise ValueError("Model prediction must have logits or probabilities")
         
@@ -240,9 +261,11 @@ class EvaluationPipeline:
                 try:
                     # Generate explanation
                     start_time = time.time()
+                    # Prepare explainer input (use tokens for text modality)
+                    explainer_input = sample.tokens if self.modality == DataModality.TEXT else sample
                     attribution = explainer.explain(
                         model=model_predict_fn,
-                        input_data=sample,
+                        input_data=explainer_input,
                         target_class=sample.label
                     )
                     explanation_time = time.time() - start_time
@@ -251,7 +274,7 @@ class EvaluationPipeline:
                     start_time = time.time()
                     faithfulness_result = self.faithfulness_metric.compute_faithfulness_score(
                         model=model_predict_fn,
-                        explainer=lambda x: attribution,  # Pre-computed explanation
+                        explainer=lambda model_fn, d: attribution,  # Pre-computed explanation
                         data=sample,
                         target_class=sample.label
                     )

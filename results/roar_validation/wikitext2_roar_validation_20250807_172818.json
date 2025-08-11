@@ -1,0 +1,57 @@
+{
+  "config": {
+    "dataset": "wikitext2",
+    "num_samples": 5,
+    "removal_percentages": [
+      0.1,
+      0.2
+    ],
+    "include_shap": false,
+    "device": "cpu",
+    "random_seed": 42
+  },
+  "roar_results": {
+    "Random": [
+      {
+        "explainer_name": "Random",
+        "removal_percentage": 0.1,
+        "original_accuracy": 0.0,
+        "modified_accuracy": 0.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 5,
+        "computation_time": 1.2641830444335938,
+        "metadata": {
+          "n_modified_samples": 5,
+          "removal_strategy": "top_k_features"
+        }
+      },
+      {
+        "explainer_name": "Random",
+        "removal_percentage": 0.2,
+        "original_accuracy": 0.0,
+        "modified_accuracy": 0.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 5,
+        "computation_time": 1.3449749946594238,
+        "metadata": {
+          "n_modified_samples": 5,
+          "removal_strategy": "top_k_features"
+        }
+      }
+    ]
+  },
+  "faithfulness_summary": {},
+  "correlation_results": [
+    {
+      "explainer_name": "Random",
+      "pearson_r": 0.0,
+      "p_value": 0.0,
+      "spearman_rho": 0.0,
+      "spearman_p": 0.0,
+      "n_samples": 0,
+      "roar_scores": [],
+      "faithfulness_scores": [],
+      "is_significant": false
+    }
+  ]
+}

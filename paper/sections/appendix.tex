@@ -1,0 +1,60 @@
+\section*{Additional Results}
+Extended tables, hyperparameters, and reproducibility details.
+
+\subsection*{Reproducibility: environment and commands}
+Environment: Python 3.13, PyTorch 2.7.1, CPU execution. Create venv, install requirements, then run scripts.
+
+\begin{verbatim}
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# SST-2 (200, IG+Random)
+./venv/bin/python scripts/run_sst2_experiments.py \
+  --num-samples 200 --max-eval-samples 200 \
+  --device cpu --faithfulness-samples 64 \
+  --explainers IntegratedGradients,Random \
+  --random-seed 42 \
+  --output-dir results/sst2_200_ig_random_fs64
+
+# WikiText-2 (200, IG+Random)
+./venv/bin/python scripts/run_wikitext2_experiments.py \
+  --num-samples 200 --max-eval-samples 200 \
+  --device cpu --faithfulness-samples 64 \
+  --max-length 256 \
+  --explainers IntegratedGradients,Random \
+  --random-seed 42 \
+  --output-dir results/wikitext2_200_ig_random_fs64_len256_full
+
+# SHAP/LIME coverage (25)
+./venv/bin/python scripts/run_sst2_experiments.py \
+  --num-samples 25 --max-eval-samples 25 \
+  --device cpu --faithfulness-samples 32 \
+  --explainers SHAP,LIME \
+  --random-seed 42 \
+  --output-dir results/sst2_25_shap_lime_fs32
+
+# Statistical analysis
+./venv/bin/python scripts/run_statistical_analysis.py \
+  --runs results/sst2_200_ig_random_fs64 \
+         results/wikitext2_200_ig_random_fs64_len256_full \
+         results/sst2_25_shap_lime_fs32 \
+         results/wikitext2_25_shap_fs16 \
+  --output-dir results/analysis/task4
+
+# Figures
+./venv/bin/python scripts/make_figures.py \
+  --runs results/sst2_200_ig_random_fs64 \
+         results/wikitext2_200_ig_random_fs64_len256_full \
+         results/sst2_25_shap_lime_fs32 \
+         results/wikitext2_25_shap_fs16 \
+         results/synthetic_tabular_ig_lime_random_ns50_nf10_fs128 \
+  --figdir figures
+
+# Paper build
+./scripts/build_paper.sh
+\end{verbatim}
+
+\subsection*{Licensing and attribution}
+SST-2 and WikiText-2 are used under their respective licenses; see \texttt{data/LICENSE\_COMPLIANCE.md} and original dataset sources. Code is MIT licensed.
+

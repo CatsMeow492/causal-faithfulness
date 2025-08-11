@@ -1,0 +1,36 @@
+{
+  "SHAP": {
+    "status": "success",
+    "n_samples": 25,
+    "mean_f_score": 0.054003395878990244,
+    "std_f_score": 0.08164324278448509,
+    "median_f_score": 0.0,
+    "min_f_score": 0.0,
+    "max_f_score": 0.28705579324162567,
+    "q25_f_score": 0.0,
+    "q75_f_score": 0.08640164091781799,
+    "mean_p_value": 0.11466891202796183,
+    "significant_fraction": 0.64,
+    "confidence_interval_95": [
+      0.0,
+      0.2488968989975881
+    ]
+  },
+  "LIME": {
+    "status": "success",
+    "n_samples": 25,
+    "mean_f_score": 0.05664861181797262,
+    "std_f_score": 0.0828152105982262,
+    "median_f_score": 0.005618074759689229,
+    "min_f_score": 0.0,
+    "max_f_score": 0.2921507759204519,
+    "q25_f_score": 0.0,
+    "q75_f_score": 0.06554202087904637,
+    "mean_p_value": 0.2551835929072988,
+    "significant_fraction": 0.64,
+    "confidence_interval_95": [
+      0.0,
+      0.24811075467494265
+    ]
+  }
+}

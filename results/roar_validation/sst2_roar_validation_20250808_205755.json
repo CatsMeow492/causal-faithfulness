@@ -1,0 +1,413 @@
+{
+  "config": {
+    "dataset": "sst2",
+    "num_samples": 30,
+    "removal_percentages": [
+      0.1,
+      0.2
+    ],
+    "include_shap": false,
+    "device": "cpu",
+    "random_seed": 42
+  },
+  "roar_results": {
+    "Random": [
+      {
+        "explainer_name": "Random",
+        "removal_percentage": 0.1,
+        "original_accuracy": 0.9333333333333333,
+        "modified_accuracy": 0.9333333333333333,
+        "accuracy_drop": 0.0,
+        "n_samples": 30,
+        "computation_time": 4.411228179931641,
+        "metadata": {
+          "n_modified_samples": 30,
+          "removal_strategy": "top_k_features"
+        }
+      },
+      {
+        "explainer_name": "Random",
+        "removal_percentage": 0.2,
+        "original_accuracy": 0.9333333333333333,
+        "modified_accuracy": 0.9333333333333333,
+        "accuracy_drop": 0.0,
+        "n_samples": 30,
+        "computation_time": 4.3817620277404785,
+        "metadata": {
+          "n_modified_samples": 30,
+          "removal_strategy": "top_k_features"
+        }
+      }
+    ],
+    "IntegratedGradients": [
+      {
+        "explainer_name": "IntegratedGradients",
+        "removal_percentage": 0.1,
+        "original_accuracy": 0.9333333333333333,
+        "modified_accuracy": 0.9333333333333333,
+        "accuracy_drop": 0.0,
+        "n_samples": 30,
+        "computation_time": 4.674905061721802,
+        "metadata": {
+          "n_modified_samples": 30,
+          "removal_strategy": "top_k_features"
+        }
+      },
+      {
+        "explainer_name": "IntegratedGradients",
+        "removal_percentage": 0.2,
+        "original_accuracy": 0.9333333333333333,
+        "modified_accuracy": 0.9333333333333333,
+        "accuracy_drop": 0.0,
+        "n_samples": 30,
+        "computation_time": 4.649242162704468,
+        "metadata": {
+          "n_modified_samples": 30,
+          "removal_strategy": "top_k_features"
+        }
+      }
+    ],
+    "Occlusion": [
+      {
+        "explainer_name": "Occlusion",
+        "removal_percentage": 0.1,
+        "original_accuracy": 0.9333333333333333,
+        "modified_accuracy": 0.43333333333333335,
+        "accuracy_drop": 0.5,
+        "n_samples": 30,
+        "computation_time": 252.28031420707703,
+        "metadata": {
+          "n_modified_samples": 30,
+          "removal_strategy": "top_k_features"
+        }
+      },
+      {
+        "explainer_name": "Occlusion",
+        "removal_percentage": 0.2,
+        "original_accuracy": 0.9333333333333333,
+        "modified_accuracy": 0.43333333333333335,
+        "accuracy_drop": 0.5,
+        "n_samples": 30,
+        "computation_time": 255.95914816856384,
+        "metadata": {
+          "n_modified_samples": 30,
+          "removal_strategy": "top_k_features"
+        }
+      }
+    ]
+  },
+  "faithfulness_summary": {
+    "Random": {
+      "mean_f_score": 0.12802550547406502,
+      "std_f_score": 0.1776421508246977,
+      "median_f_score": 0.047255278477637885,
+      "min_f_score": 0.0,
+      "max_f_score": 0.6247832733342144,
+      "mean_p_value": 0.06273573327123552,
+      "significant_results": 24,
+      "total_results": 30,
+      "mean_computation_time": 1.363172133763631,
+      "total_computation_time": 40.895164012908936
+    },
+    "IntegratedGradients": {
+      "mean_f_score": 0.059695902581437615,
+      "std_f_score": 0.08312908285860984,
+      "median_f_score": 0.02053326387895371,
+      "min_f_score": 0.0,
+      "max_f_score": 0.3190332274847216,
+      "mean_p_value": 0.18576545005434722,
+      "significant_results": 18,
+      "total_results": 30,
+      "mean_computation_time": 9.631353004773457,
+      "total_computation_time": 288.94059014320374
+    },
+    "Occlusion": {
+      "mean_f_score": 1.0,
+      "std_f_score": 0.0,
+      "median_f_score": 1.0,
+      "min_f_score": 1.0,
+      "max_f_score": 1.0,
+      "mean_p_value": 1.9525454964629393e-19,
+      "significant_results": 30,
+      "total_results": 30,
+      "mean_computation_time": 16.31923705736796,
+      "total_computation_time": 489.5771117210388
+    }
+  },
+  "correlation_results": [
+    {
+      "explainer_name": "Random",
+      "pearson_r": NaN,
+      "p_value": NaN,
+      "spearman_rho": NaN,
+      "spearman_p": NaN,
+      "n_samples": 2,
+      "roar_scores": [
+        0.0,
+        0.0
+      ],
+      "faithfulness_scores": [
+        0.0,
+        0.5622805689935613
+      ],
+      "is_significant": false
+    },
+    {
+      "explainer_name": "IntegratedGradients",
+      "pearson_r": NaN,
+      "p_value": NaN,
+      "spearman_rho": NaN,
+      "spearman_p": NaN,
+      "n_samples": 2,
+      "roar_scores": [
+        0.0,
+        0.0
+      ],
+      "faithfulness_scores": [
+        0.0,
+        0.3190332274847216
+      ],
+      "is_significant": false
+    },
+    {
+      "explainer_name": "Occlusion",
+      "pearson_r": NaN,
+      "p_value": NaN,
+      "spearman_rho": NaN,
+      "spearman_p": NaN,
+      "n_samples": 2,
+      "roar_scores": [
+        0.5,
+        0.5
+      ],
+      "faithfulness_scores": [
+        1.0,
+        1.0
+      ],
+      "is_significant": false
+    }
+  ],
+  "per_sample": {
+    "Random": {
+      "drops": [
+        2.372264862060547e-05,
+        0.0,
+        7.027387619018555e-05,
+        0.787340372800827,
+        0.0015234947204589844,
+        0.0002092123031616211,
+        0.0,
+        0.0040435791015625,
+        3.5822391510009766e-05,
+        0.0037026405334472656,
+        0.0,
+        0.0002987384796142578,
+        0.00010484457015991211,
+        0.0,
+        0.0,
+        0.00018703937530517578,
+        0.0,
+        0.00038170814514160156,
+        0.0013126134872436523,
+        0.0005667805671691895,
+        0.0,
+        0.20164358615875244,
+        0.0,
+        0.0,
+        0.0005627870559692383,
+        0.0,
+        0.005198121070861816,
+        2.4318695068359375e-05,
+        0.00812464952468872,
+        0.0
+      ],
+      "f_scores": [
+        0.0,
+        0.5622805689935613,
+        0.0,
+        0.0,
+        0.18395798217050519,
+        0.041685347929574346,
+        0.6247832733342144,
+        0.1751607952682347,
+        0.0,
+        0.10495680268000396,
+        0.052825209025701425,
+        0.017186066375789233,
+        0.217970571424686,
+        0.02237384035737766,
+        0.0,
+        0.0,
+        0.0,
+        0.14064387282170776,
+        0.1477326237485428,
+        0.588986882501173,
+        0.20858559043923242,
+        0.3346967969534288,
+        0.0,
+        0.0,
+        0.0,
+        0.07776128639773083,
+        0.016572448034748,
+        0.0,
+        0.13751520716578802,
+        0.18508999859995034
+      ]
+    },
+    "IntegratedGradients": {
+      "drops": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "f_scores": [
+        0.0,
+        0.3190332274847216,
+        0.0,
+        0.0,
+        0.15946888938335213,
+        0.0,
+        0.23146194288318955,
+        0.17766695450351067,
+        0.0006612562331294036,
+        0.0,
+        0.0,
+        0.012377916783530618,
+        0.023192977042897134,
+        0.035595447853979945,
+        0.02088885092485049,
+        0.0,
+        0.0,
+        0.06941215394349898,
+        0.14256250688510852,
+        0.056520466293438654,
+        0.0,
+        0.12489950930278515,
+        0.0,
+        0.0,
+        0.0,
+        0.020177676833056934,
+        0.0271278811185498,
+        0.073873864821562,
+        0.09727330375191812,
+        0.19868225140004847
+      ]
+    },
+    "Occlusion": {
+      "drops": [
+        0.2890776991844177,
+        0.5960726737976074,
+        0.08064287900924683,
+        0.07010012865066528,
+        0.7767521739006042,
+        0.08956676721572876,
+        0.7011957168579102,
+        0.8083223104476929,
+        0.0828014612197876,
+        0.9380551762878895,
+        0.08091503381729126,
+        0.9387056492269039,
+        0.9093756750226021,
+        0.0,
+        0.9255663082003593,
+        0.0829114317893982,
+        0.09379792213439941,
+        0.05449002981185913,
+        0.8018967509269714,
+        0.9044956415891647,
+        0.8844127766788006,
+        0.8209493905305862,
+        0.0,
+        0.10115474462509155,
+        0.10422748327255249,
+        0.9235775247216225,
+        0.9209360256791115,
+        0.07367897033691406,
+        0.8983420208096504,
+        0.7741388082504272
+      ],
+      "f_scores": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "per_sample_correlation": {
+    "Random": {
+      "pearson_r": -0.07701399494218594,
+      "pearson_p": 0.685844492076547,
+      "spearman_rho": 0.1214035087719298,
+      "spearman_p": 0.5227773374296424,
+      "n": 30
+    },
+    "IntegratedGradients": {
+      "pearson_r": NaN,
+      "pearson_p": NaN,
+      "spearman_rho": NaN,
+      "spearman_p": NaN,
+      "n": 30
+    },
+    "Occlusion": {
+      "pearson_r": NaN,
+      "pearson_p": NaN,
+      "spearman_rho": NaN,
+      "spearman_p": NaN,
+      "n": 30
+    }
+  }
+}

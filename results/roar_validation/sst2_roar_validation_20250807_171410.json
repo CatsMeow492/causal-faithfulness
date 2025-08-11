@@ -1,0 +1,102 @@
+{
+  "config": {
+    "dataset": "sst2",
+    "num_samples": 5,
+    "removal_percentages": [
+      0.2
+    ],
+    "include_shap": false,
+    "device": "cpu",
+    "random_seed": 42
+  },
+  "roar_results": {
+    "Random": [
+      {
+        "explainer_name": "Random",
+        "removal_percentage": 0.2,
+        "original_accuracy": 1.0,
+        "modified_accuracy": 1.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 5,
+        "computation_time": 0.7735691070556641,
+        "metadata": {
+          "n_modified_samples": 5,
+          "removal_strategy": "top_k_features"
+        }
+      }
+    ],
+    "IntegratedGradients": [
+      {
+        "explainer_name": "IntegratedGradients",
+        "removal_percentage": 0.2,
+        "original_accuracy": 1.0,
+        "modified_accuracy": 1.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 5,
+        "computation_time": 0.8491451740264893,
+        "metadata": {
+          "n_modified_samples": 5,
+          "removal_strategy": "top_k_features"
+        }
+      }
+    ]
+  },
+  "faithfulness_summary": {
+    "Random": {
+      "mean_f_score": 0.14852428633291942,
+      "std_f_score": 0.21956729473591916,
+      "median_f_score": 0.0,
+      "min_f_score": 0.0,
+      "max_f_score": 0.5657368037911643,
+      "mean_p_value": 1.3907496293380962e-53,
+      "significant_results": 5,
+      "total_results": 5,
+      "mean_computation_time": 37.67740688323975,
+      "total_computation_time": 188.38703441619873
+    },
+    "IntegratedGradients": {
+      "mean_f_score": 0.09529494915853347,
+      "std_f_score": 0.12143786041479142,
+      "median_f_score": 0.0054405874345133665,
+      "min_f_score": 0.0,
+      "max_f_score": 0.2994514878512834,
+      "mean_p_value": 0.13041106457682564,
+      "significant_results": 4,
+      "total_results": 5,
+      "mean_computation_time": 302.59654207229613,
+      "total_computation_time": 1512.9827103614807
+    }
+  },
+  "correlation_results": [
+    {
+      "explainer_name": "Random",
+      "pearson_r": 0.0,
+      "p_value": 0.0,
+      "spearman_rho": 0.0,
+      "spearman_p": 0.0,
+      "n_samples": 1,
+      "roar_scores": [
+        0.0
+      ],
+      "faithfulness_scores": [
+        0.0
+      ],
+      "is_significant": false
+    },
+    {
+      "explainer_name": "IntegratedGradients",
+      "pearson_r": 0.0,
+      "p_value": 0.0,
+      "spearman_rho": 0.0,
+      "spearman_p": 0.0,
+      "n_samples": 1,
+      "roar_scores": [
+        0.0
+      ],
+      "faithfulness_scores": [
+        0.0
+      ],
+      "is_significant": false
+    }
+  ]
+}

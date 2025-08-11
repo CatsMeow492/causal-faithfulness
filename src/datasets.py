@@ -15,7 +15,7 @@ from transformers import (
     GPT2LMHeadModel,
     GPT2Tokenizer
 )
-from datasets import load_dataset
+from datasets import load_dataset as hf_load_dataset
 import warnings
 from .config import get_device, get_batch_size, DEFAULT_CONFIG
 
@@ -111,7 +111,7 @@ class SST2DatasetLoader(BaseDatasetLoader):
         """
         try:
             # Load dataset from HuggingFace
-            dataset = load_dataset("glue", "sst2", split=split)
+            dataset = hf_load_dataset("glue", "sst2", split=split)
             
             if num_samples is not None:
                 dataset = dataset.select(range(min(num_samples, len(dataset))))
@@ -220,7 +220,7 @@ class WikiText2DatasetLoader(BaseDatasetLoader):
         """
         try:
             # Load dataset from HuggingFace
-            dataset = load_dataset("wikitext", "wikitext-2-raw-v1", split=split)
+            dataset = hf_load_dataset("wikitext", "wikitext-2-raw-v1", split=split)
             
             samples = []
             sample_count = 0
@@ -309,19 +309,45 @@ class DatasetManager:
         """Register a dataset loader."""
         self.loaders[name] = loader
         
-    def load_sst2(self, split: str = "validation", num_samples: int = 200, model_name: str = "bert-base-uncased") -> List[DatasetSample]:
+    def load_sst2(
+        self,
+        split: str = "validation",
+        num_samples: int = 200,
+        model_name: str = "bert-base-uncased",
+        max_length: Optional[int] = None,
+    ) -> List[DatasetSample]:
         """Load SST-2 dataset for sentiment analysis experiments."""
         if "sst2" not in self.loaders:
-            self.loaders["sst2"] = SST2DatasetLoader(model_name=model_name, device=self.device)
+            self.loaders["sst2"] = SST2DatasetLoader(
+                model_name=model_name,
+                max_length=max_length or 512,
+                device=self.device
+            )
+        else:
+            if max_length is not None:
+                self.loaders["sst2"].max_length = max_length
         
         samples = self.loaders["sst2"].load_dataset(split=split, num_samples=num_samples)
         self.datasets["sst2"] = samples
         return samples
     
-    def load_wikitext2(self, split: str = "validation", num_samples: int = 200, model_name: str = "gpt2") -> List[DatasetSample]:
+    def load_wikitext2(
+        self,
+        split: str = "validation",
+        num_samples: int = 200,
+        model_name: str = "gpt2",
+        max_length: Optional[int] = None,
+    ) -> List[DatasetSample]:
         """Load WikiText-2 dataset for language modeling experiments."""
         if "wikitext2" not in self.loaders:
-            self.loaders["wikitext2"] = WikiText2DatasetLoader(model_name=model_name, device=self.device)
+            self.loaders["wikitext2"] = WikiText2DatasetLoader(
+                model_name=model_name,
+                max_length=max_length or 512,
+                device=self.device
+            )
+        else:
+            if max_length is not None:
+                self.loaders["wikitext2"].max_length = max_length
         
         samples = self.loaders["wikitext2"].load_dataset(split=split, num_samples=num_samples)
         self.datasets["wikitext2"] = samples

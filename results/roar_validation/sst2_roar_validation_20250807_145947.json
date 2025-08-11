@@ -1,0 +1,96 @@
+{
+  "config": {
+    "dataset": "sst2",
+    "num_samples": 5,
+    "removal_percentages": [
+      0.1,
+      0.2
+    ],
+    "include_shap": false,
+    "device": "cpu",
+    "random_seed": 42
+  },
+  "roar_results": {
+    "IntegratedGradients": [
+      {
+        "explainer_name": "IntegratedGradients",
+        "removal_percentage": 0.1,
+        "original_accuracy": 1.0,
+        "modified_accuracy": 1.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 5,
+        "computation_time": 0.7672350406646729,
+        "metadata": {
+          "n_modified_samples": 5,
+          "removal_strategy": "top_k_features"
+        }
+      },
+      {
+        "explainer_name": "IntegratedGradients",
+        "removal_percentage": 0.2,
+        "original_accuracy": 1.0,
+        "modified_accuracy": 1.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 5,
+        "computation_time": 0.7465980052947998,
+        "metadata": {
+          "n_modified_samples": 5,
+          "removal_strategy": "top_k_features"
+        }
+      }
+    ],
+    "Random": [
+      {
+        "explainer_name": "Random",
+        "removal_percentage": 0.1,
+        "original_accuracy": 1.0,
+        "modified_accuracy": 1.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 5,
+        "computation_time": 0.8051509857177734,
+        "metadata": {
+          "n_modified_samples": 5,
+          "removal_strategy": "top_k_features"
+        }
+      },
+      {
+        "explainer_name": "Random",
+        "removal_percentage": 0.2,
+        "original_accuracy": 1.0,
+        "modified_accuracy": 1.0,
+        "accuracy_drop": 0.0,
+        "n_samples": 5,
+        "computation_time": 0.8206079006195068,
+        "metadata": {
+          "n_modified_samples": 5,
+          "removal_strategy": "top_k_features"
+        }
+      }
+    ]
+  },
+  "faithfulness_summary": {},
+  "correlation_results": [
+    {
+      "explainer_name": "IntegratedGradients",
+      "pearson_r": 0.0,
+      "p_value": 0.0,
+      "spearman_rho": 0.0,
+      "spearman_p": 0.0,
+      "n_samples": 0,
+      "roar_scores": [],
+      "faithfulness_scores": [],
+      "is_significant": false
+    },
+    {
+      "explainer_name": "Random",
+      "pearson_r": 0.0,
+      "p_value": 0.0,
+      "spearman_rho": 0.0,
+      "spearman_p": 0.0,
+      "n_samples": 0,
+      "roar_scores": [],
+      "faithfulness_scores": [],
+      "is_significant": false
+    }
+  ]
+}

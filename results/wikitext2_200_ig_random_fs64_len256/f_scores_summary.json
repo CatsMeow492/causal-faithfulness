@@ -1,0 +1,36 @@
+{
+  "IntegratedGradients": {
+    "status": "success",
+    "n_samples": 50,
+    "mean_f_score": 0.5623542278256359,
+    "std_f_score": 0.3296279553654785,
+    "median_f_score": 0.644642031569704,
+    "min_f_score": 0.0,
+    "max_f_score": 1.0,
+    "q25_f_score": 0.37492478558063164,
+    "q75_f_score": 0.84231856604581,
+    "mean_p_value": 0.036100354623195205,
+    "significant_fraction": 0.88,
+    "confidence_interval_95": [
+      0.0,
+      0.9836654315883624
+    ]
+  },
+  "Random": {
+    "status": "success",
+    "n_samples": 50,
+    "mean_f_score": 0.007426392992776598,
+    "std_f_score": 0.041411704273218004,
+    "median_f_score": 0.0,
+    "min_f_score": 0.0,
+    "max_f_score": 0.28456606092419623,
+    "q25_f_score": 0.0,
+    "q75_f_score": 0.0,
+    "mean_p_value": 9.56550158161851e-06,
+    "significant_fraction": 1.0,
+    "confidence_interval_95": [
+      0.0,
+      0.06723403125384098
+    ]
+  }
+}
